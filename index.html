@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1590/1590476.png">
+    <link rel="stylesheet" href="style.css">
+    <title>Login stranica</title>
+
+    <style>
+        body{
+            background-image: linear-gradient(rgba(0, 0, 0, 0.5),
+                       rgba(0, 0, 0, 0.8)), url("https://images.pexels.com/photos/821735/pexels-photo-821735.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1");
+            
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        h1,h2,p{
+            color:white;
+            text-align: center;
+        }
+        div{
+            text-align: center;
+            color:white;
+        }
+        .col-md-8{
+           width: 50%; 
+           text-align: center;
+        }
+    </style>
+</head>
+
+
+<body>
+    <div class="modal-header">
+        <h1>STR Milimetraža magacin</h1>
+    </div>
+<div class="col-md-8 col-md-offset-3 box" style="margin-top: 50px;">
+    
+   
+        
+
+        <div class="login" style="width:200px;margin: 0 auto;">
+           
+                <h2>Ulogujte se</h2>
+                <p>Kako bi pristupili informacijama o količini artikala,njihovoj ceni i šifri prvo se ulogujte. Obavezno obavestiti poslodavca o svim promenama.</p>   
+                
+                <input type="text" class="form-control" name="uname" placeholder="Korinicko ime" id="username" style="width: 200px; margin:0 auto;"><br>
+                <div style="display: inline-block;">
+                    <div style="float: left;">
+                        <input type="password" name="pass" class="form-control" placeholder="Lozinka" id="pass" style="width: 200px;">
+                    </div><br>   
+                    <div style="float: left; display: block;">
+                        <input type="checkbox" onclick="sakrij('pass')" class="form-check-input"> Pokaži lozinku
+                    </div>
+                </div>
+                <br><br>
+                <input type="button" id="log" onclick="logovanje()" value="Logovanje" class="btn btn-light" style="color: black;">
+                <br><br><br><br>
+        
+        </div>
+
+        <br>
+           
+  
+            <div class="login" id="registracija" style="width:200px;margin: 0 auto;">
+                <h2>Registrujte se</h2>
+                <p>Svi novozaposleni radnici se prvo moraju registrovati.</p>
+                <br>
+                <input type="text" class="form-control" placeholder="Ime i prezime" id="ime" style="width: 200px;margin:0 auto;"><br>
+                <input type="text" class="form-control" placeholder="Korisničko ime" id="korisnickoIme" style="width: 200px;margin:0 auto;"><br>
+                <input type="password" class="form-control" placeholder="Lozinka" id="lozinka" style="width: 200px;margin:0 auto;">
+                <div style="float: left; display: block;">
+                    <input type="checkbox" onclick="sakrij('lozinka')" class="form-check-input" tyle="margin:0 auto;"> Pokaži lozinku <br>
+                </div><br>
+                <input type="password" class="form-control" placeholder="Potvrda lozinke" id="lozinkaPotvrda" style="width: 200px;margin:0 auto;">
+                <div style="float: left; display: block;">
+                    <input type="checkbox" onclick="sakrij('lozinkaPotvrda')" class="form-check-input" style="margin:0 auto;"> Pokaži lozinku <br> <br>
+                </div>
+               
+                <input type="button" id="reg" onclick="regist()" value="Registruj se" class="btn btn-light" style="color: black;">
+            </div><br><br>
+                
+        </div>
+
+        <div class="modal-body"  style="width: 300px;margin:0 auto;">
+            
+        </div>
+        <br>     
+    
+    </div>
+
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+
+        //brisanje u slucaju neispravnih unosa
+         $(document).ready(function(){
+            $("#prosledi").on('click', function () {
+                $("#ime").val('');
+                $("#korisnickoIme").val('');
+                $("#lozinka").val('');
+                $("#lozinkaPotvrda").val('');
+            });
+        });
+        $(document).ready(function(){
+            $("#log").on('click', function () {
+                $("#username").val('');
+                $("#pass").val('');
+            });
+        });
+
+        //logika logovanja na stranicu uz AJAX
+        function logovanje(){
+            var u = $("#username");
+            var p = $("#pass");
+                
+            if (isNotEmpty(u) & isNotEmpty(p)){
+                $.ajax({
+                    url: 'logovanje.php',
+                    method: 'POST',
+                    dataType: 'text',
+                    data: {
+                        key: 'log',
+                        username: u.val(),
+                        pass: p.val(),
+                    },
+                    success: function(data){
+                        if (data == "ERROR"){
+                            alert('Neuspesno ste se prijavili!');
+                        }
+                        else {
+                            window.location = "pocetna.html";
+                        }
+                    }
+                })
+            }
+        }
+
+        //logika registrovanja na stranicu uz AJAX
+        function regist(){
+            var name = $("#ime");
+            var username = $("#korisnickoIme");
+            var password = $("#lozinka");
+            var check = $("#lozinkaPotvrda");
+                
+            if (isNotEmpty(name) & isNotEmpty(username) & isNotEmpty(password) & isNotEmpty(check)){
+                if(password.val() == check.val()){
+                    $.ajax({
+                        url: 'logovanje.php',
+                        method: 'POST',
+                        dataType: 'text',
+                        data: {
+                            key: 'reg',
+                            name: name.val(),
+                            username: username.val(),
+                            password: password.val(),
+                        },
+                        success: function(data){
+                            if (data == "Podaci sačuvani u našoj bazi!"){
+                                alert('Podaci sačuvani u našoj bazi!');
+                                window.location = "index.html";
+                            } else {
+                                alert('Registracija neuspesna Podaci nisu sacuvani u bazi!');
+                            }
+                        }
+                    })
+                } else {
+                    alert("Lozinke nisu iste.");
+                    password.css('border', '1px solid red');
+                    check.css('border', '1px solid red');
+                }
+            }
+        }
+
+
+        
+        
+        
+        //logika sakrivanja password-a
+        function sakrij(nesto){
+            var x = document.getElementById(nesto);
+            if (x.type === "password"){
+                x.type = "text";
+            } else x.type = "password";
+        }
+
+        //logika vizuelnog obracanja u slucaju da je forma prazna!
+        function isNotEmpty(poziv){
+            if (poziv.val() == ''){
+                poziv.css('border', '1px solid red');
+                return false;
+            } else 
+                poziv.css('border','');
+            return true;
+        }
+
+
+    </script>
+
+</body>
+</html>

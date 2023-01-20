@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1590/1590476.png">
+    <title>Pocetna strana</title>
+
+    <style>
+        body{
+            background-image:url("https://e1.pxfuel.com/desktop-wallpaper/83/685/desktop-wallpaper-various-sewing-utensils-on-white-backgrounds-utensils.jpg");
+            
+            background-position: 50% 50%;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-size: cover;
+        }
+
+        h1,h2,div{
+            color:black;
+        }
+       
+
+        .table-hover tbody tr:hover td {
+            background: rgb(85, 85, 85);
+        }       
+
+        .modal-title{
+            color:black;
+        }
+
+        #vidi{
+            color:black;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" style="margin-top: 30px;">
+        <div id="tableManager" class="modal fade">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                <div class="modal-header">
+                    <h2 id ="naslov" class="modal-title">Unos novog proizvoda:</h2>
+                </div>
+                <div class="modal-body">
+                    <div id="izmeni">
+                        <input type="text" class="form-control" placeholder="ID..." id="pr_id"><br>
+                        <input type="text" class="form-control" placeholder="Naziv..." id="naziv"><br>
+                        <input type="text" class="form-control" placeholder="Model..." id="model"><br>
+                        <input type="text" class="form-control" placeholder="Mesto proizvodnje..." id="mesto_proizvodnje"><br>
+                        <input type="text" class="form-control" placeholder="Cena..." id="cena"><br>
+                        <input type="hidden" id="izmeniPrID" value="0">
+                    </div>
+                    <div id="vidi" style="display:none;">
+                        <h3>Naziv:</h3>
+                        <div id="nazivProizvoda"></div>
+                        <hr>
+                        <h3>Model:</h3>
+                        <div id="modelProizvoda"></div>
+                    </div> 
+                </div>
+                <div class="modal-footer">
+                    <input type="button" class="btn btn-primary" data-dismiss="modal" value="Izađi" id="closeBtn" style="display: none;">
+                    <input type="button" id="manageBtn" onclick="glavna('ubaci')" value="Sačuvaj" class="btn btn-success">
+                </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row"> 
+            <div class="col-md-8 col-md-offset-2">  
+                <h2>Baza proizvoda</h2>
+                <div>
+                <div style="width: 200px; float: left;">
+                    <select class="form-control" id="izbor">
+                        <option value="pr_id">ID</option>
+                        <option value="naziv">Naziv</option>
+                        <option value="model">Model</option>
+                        <option value="mesto_proizvodnje">Mesto proizvodnje</option>
+                        <option value="cena">Cena</option>
+                    </select>
+                </div>
+                <div style="float: left;">
+                    <input type="button" onclick="sortiraj()" class="btn btn-success" id="sortiraj" value="Sortiraj">
+                </div>
+                <div style="float: right;">
+                    <input type="button" onclick="odjava()" value="Odjava" class="btn btn-danger">
+                </div>
+                <div style="float: right;"> 
+                    <input type="button" class="btn btn-success" id="dodajNovi" value="Dodaj novi proizvod">
+                </div>
+                
+            </div>
+            <br><br><br>
+            <table class="table table-hover table-dark">
+                <thead>
+                    <tr>
+                        <td width=70px>ID</td>
+                        <td width=25px>Naziv</td>
+                        <td width=70px>Model</td>
+                        <td width=30x>Mesto proizvodnje</td>
+                        <td width=30px>Cena</td>
+                        <td width="150px">Opcije</td>
+                    </tr>
+                </thead>
+                <tbody id="hhh">
+
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+    <div id="result"></div>
+
+    <script src="http://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    
+    <script type="text/javascript">
+
+        $(document).ready(function(){
+            $("#dodajNovi").on('click', function () {
+                $("#tableManager").modal('show');
+            });
+
+        $("#tableManager").on('hidden.bs.modal', function () {
+               $("#izmeni").fadeIn();
+               $("#vidi").fadeOut();
+               $("#izmeniPrID").val(0);
+               $("#pr_id").val("");
+               $("#naziv").val("");
+               $("#model").val("");
+               $("#mesto_proizvodnje").val("");
+               $("#cena").val("");
+               $("#closeBtn").fadeOut();
+               $(".modal-title").html("Unos novog proizvoda:");
+               document.getElementById("pr_id").disabled = false;
+               $("#manageBtn").attr('value', 'Dodaj').attr('onclick', "glavna('ubaci')").fadeIn();
+               $("div").css("color", "white");
+            });    
+          
+            ucitajPodatke(0, 50);
+        });
+
+        function sortiraj(){
+            $("#hhh tr").remove();
+            ucitajPodatke(0,50);
+        }
+
+        function odjava(){
+            window.location.replace("index.html");
+        }
+
+        function ucitajPodatke(start, limit) {
+            var sort = $("#izbor").val();
+            console.log(sort);
+            $.ajax({
+                url: 'pocetnaFunkcionalnosti.php',
+                method: 'POST',
+                dataType: 'text',
+                data: {
+                    key: 'ucitaj',
+                    sort: sort,
+                    start: start,
+                    limit: limit
+                }, success: function (response) {
+                    if (response != "reachedMax") {
+                        $('tbody').append(response);
+                        start += limit;
+                        ucitajPodatke(start, limit);
+                    }
+                }
+            });
+        }
+
+        function izmeniPogledaj(broj_reda, tip){
+            $.ajax({
+                    url: 'pocetnaFunkcionalnosti.php',
+                    method: 'POST',
+                    dataType: 'json',
+                    data: {
+                        key: 'uzmiPodatke',
+                        pr_id: broj_reda
+                    },
+                    success: function(response){
+                        
+                        if(tip == "pogledaj"){
+                            $(".modal-title").html("Informacije");
+                            $("#vidi").fadeIn();
+                            $("#izmeni").fadeOut();
+                            $("#nazivProizvoda").html(response.naziv);
+                            $("#modelProizvoda").html(response.model);
+                            $("#manageBtn").fadeOut();
+                            $("#closeBtn").fadeIn();
+                            $("div").css("color", "black");
+                        } else {
+                            $("#izmeni").fadeIn();
+                            $("#vidi").fadeOut();
+                            $("#izmeniPrID").val(broj_reda);
+                            $("#pr_id").val(response.pr_id);
+                            $("#naziv").val(response.naziv);
+                            $("#model").val(response.model);
+                            $("#mesto_proizvodnje").val(response.mesto_proizvodnje);
+                            $("#cena").val(response.cena);
+                            $("#manageBtn").attr('value','Sačuvaj izmene').attr('onclick', "glavna('izmeni')");
+                            $("#closeBtn").fadeOut();
+                            $(".modal-title").html("Izmenite konkretan model proizvoda " + " " + response.model);
+                            document.getElementById("pr_id").disabled = true;
+                            
+                        }
+                        $("#tableManager").modal('show');
+                }     
+                });
+                
+        }
+
+        function izbrisi(broj_reda){
+            if(confirm('Da li ste sigurni da biste obrisali?')){
+                $.ajax({
+                    url: 'pocetnaFunkcionalnosti.php',
+                    method: 'POST',
+                    dataType: 'text',
+                    data: {
+                        key: 'izbrisi',
+                        pr_id: broj_reda
+                    }, success: function (response) {
+                        $("#proizod_"+broj_reda).parent().remove();
+                        alert(response);
+                        location.reload();
+                    }
+                });
+            }
+        }
+
+        function glavna(operacija){
+
+            var pr = $("#pr_id");
+            var n = $("#naziv");
+            var m = $("#model");
+            var mp = $("#mesto_proizvodnje");
+            var c = $("#cena");
+            
+                
+            if (isNotEmpty(n) & isNotEmpty(m) & isNotEmpty(mp) & isNotEmpty(c)){
+                $.ajax({
+                    url: 'pocetnaFunkcionalnosti.php',
+                    method: 'POST',
+                    dataType: 'text',
+                    data: {
+                        key: operacija,
+                        pr_id: pr.val(),
+                        naziv: n.val(),
+                        model: m.val(),
+                        mesto_proizvodnje: mp.val(),
+                        cena: c.val()
+                    },
+                    success: function(data){
+                            if(data!='Ubacen novi model proizvoda!' || data!='Uspešno izmenjen proizvod!'){
+                                alert(data);
+                            } else {
+                                alert(data);
+                            }
+                            
+                            location.reload();
+                        }
+                })
+            }
+        }
+
+function isNotEmpty(poziv){
+            if (poziv.val() == ''){
+                poziv.css('border', '1px solid red');
+                return false;
+            } else 
+                poziv.css('border','');
+            return true;
+        }
+
+        function resetuj(){
+            document.getElementById('pr_id').value='';
+            document.getElementById('naziv').value='';
+            document.getElementById('model').value='';
+            document.getElementById('mesto_proizvodnje').value='';  
+            document.getElementById('cena').value='';  
+        }
+
+    </script>
+</body>
+</html>
