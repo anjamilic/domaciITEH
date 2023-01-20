@@ -20,11 +20,11 @@
                 $sql="INSERT INTO `proizvodi` (`pr_id`,`naziv`, `model`, `mesto_proizvodnje`,`cena`,`zap_id`) VALUES ('$pr_id','$naziv', '$model', '$mestoProizvodnje', '$cena', 1)";
             
                 if ($conn->query($sql) === TRUE) {
-                    echo "Ubacen novi model!";
+                    echo "Ubacen novi proizvod!";
                 }
                 else 
                 {
-                    echo "Takav model vec postoji!";
+                    echo "Takav proizvod vec postoji!";
                 }
             }
         }
